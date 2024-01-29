@@ -4,7 +4,7 @@ import { subscribeWithSelector } from 'zustand/middleware';
 import { useContext } from 'react';
 import { DataListCtx } from './Context';
 import { Draft, enableMapSet } from 'immer';
-import { onClickSortItem } from '../../helpers/internalUtilities';
+import { sortItems } from '../../helpers/internalUtilities';
 import type { ColumnKey } from '../../models/ColumnKey';
 import type { IContextualMenuItem } from '@fluentui/react/lib/ContextualMenu';
 import type { TColumn } from '../../models/IDataList';
@@ -57,20 +57,40 @@ export const createUseDataListStore = <T>(initialStore: Partial<DataListStore<T>
                         key: 'sortAsc',
                         text: props?.columnMenuConfig?.sortAscText || 'Sort Ascending',
                         onClick: () => {
-                            const sorted = onClickSortItem(false, get);
-                            set(state => {
-                                (state.rows as T[]) = sorted;
-                            });
+                            const columnKey = get().clickedColumnKey;
+                            const columnIdx = get().columns.findIndex(i => i.key === columnKey);
+
+                            const result = sortItems(get().rows, columnKey, false);
+                            if (columnIdx > -1) {
+                                set(state => {
+                                    state.columns[columnIdx] = {
+                                        ...state.columns[columnIdx],
+                                        isSortedDescending: false,
+                                        isSorted: true
+                                    },
+                                    (state.rows as T[]) = result;
+                                });
+                            }
                         }
                     },
                     {
                         key: 'sortDesc',
                         text: props?.columnMenuConfig?.sortDescText || 'Sort Descending',
                         onClick: () => {
-                            const sorted = onClickSortItem(true, get);
-                            set(state => {
-                                (state.rows as T[]) = sorted;
-                            });
+                            const columnKey = get().clickedColumnKey;
+                            const columnIdx = get().columns.findIndex(i => i.key === columnKey);
+
+                            const result = sortItems(get().rows, columnKey, true);
+                            if (columnIdx > -1) {
+                                set(state => {
+                                    state.columns[columnIdx] = {
+                                        ...state.columns[columnIdx],
+                                        isSortedDescending: true,
+                                        isSorted: true
+                                    },
+                                    (state.rows as T[]) = result;
+                                });
+                            }
                         }
                     }
                 ],

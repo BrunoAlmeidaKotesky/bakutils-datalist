@@ -18,7 +18,7 @@ export function getWrappedFilterStoreValueHelper<K extends keyof WrappedFilterSt
     return undefined;
 }
 
-const initialFilterPluginState: FilterPluginState<any> = {
+const initialFilterPluginState: FilterPluginState<unknown> = {
     currentFiltering: null,
     queue: [],
     dateRange: null,
@@ -29,7 +29,7 @@ const initialFilterPluginState: FilterPluginState<any> = {
     dropdownValue: null,
 }
 
-export const filterPluginStore: FilterStoreOverwritten = createStore<FilterPluginStore<any>>()(
+export const filterPluginStore: FilterStoreOverwritten<unknown> = createStore<FilterPluginStore<unknown>>()(
     subscribeWithSelector(
         immer((set, get, { subscribe, getInitialState }) => ({
             ...initialFilterPluginState,
@@ -39,7 +39,7 @@ export const filterPluginStore: FilterStoreOverwritten = createStore<FilterPlugi
                 state.currentFiltering = typeof value === 'function' ? value(state.currentFiltering) : value;
             }),
             resetState: (clearCb?: () => void) => set((state) => {
-                for (let key in state) {
+                for (const key in state) {
                     const k = key as keyof typeof state;
                     if (typeof state[k] !== 'function') {
                         const newValue = initialFilterPluginState[k as keyof typeof initialFilterPluginState];
@@ -51,7 +51,7 @@ export const filterPluginStore: FilterStoreOverwritten = createStore<FilterPlugi
             setShowBreadcrumb: value => set(state => { state.showBreadcrumb = value }),
             setQueue: queue => set(state => {
                 if (typeof queue === 'function')
-                    state.queue = queue(state.queue);
+                    state.queue = queue(state.queue as any[]);
                 else
                     state.queue = queue;
             }),
@@ -98,18 +98,18 @@ export const filterPluginStore: FilterStoreOverwritten = createStore<FilterPlugi
     )
 );
 
-type FilterStoreOverwritten = {
-    getState: () => FilterPluginStore<any>;
-    getInitialState: () => FilterPluginStore<any>;
-    setState: (nextStateOrUpdater: 
-        FilterPluginStore<any> | 
-        Partial<FilterPluginStore<any>> | 
-        ((state: Draft<FilterPluginStore<any>>) => void), 
+export type FilterStoreOverwritten<T> = {
+    getState: () => FilterPluginStore<T>;
+    getInitialState: () => FilterPluginStore<T>;
+    setState: (nextStateOrUpdater:
+        FilterPluginStore<T> |
+        Partial<FilterPluginStore<T>> |
+        ((state: Draft<FilterPluginStore<T>>) => void),
         shouldReplace?: boolean
     ) => void
     subscribe: {
-        (listener: (selectedState: FilterPluginStore<any>, previousSelectedState: FilterPluginStore<any>) => void): () => void;
-        <U>(selector: (state: FilterPluginStore<any>) => U, listener: (selectedState: U, previousSelectedState: U) => void, options?: {
+        (listener: (selectedState: FilterPluginStore<T>, previousSelectedState: FilterPluginStore<T>) => void): () => void;
+        <U>(selector: (state: FilterPluginStore<T>) => U, listener: (selectedState: U, previousSelectedState: U) => void, options?: {
             equalityFn?: (a: U, b: U) => boolean;
             fireImmediately?: boolean;
         }): () => void;
@@ -132,7 +132,7 @@ export const useFilterPluginStoreValues = <K extends keyof WrappedFilterState>(
     return useFilterPluginStore(state => {
         const values: Partial<FilterStoreValues<K>> = {};
 
-        for (let key of keys) {
+        for (const key of keys) {
             values[key] = getWrappedFilterStoreValueHelper(state[key] as unknown as KeyWrapper<WrappedFilterValue<K>>, clickedColumnKey);
         }
 

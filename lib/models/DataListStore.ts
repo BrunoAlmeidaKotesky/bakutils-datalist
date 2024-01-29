@@ -14,7 +14,15 @@ export interface DataListPlugin<T> {
     name: string;
     /**You can use this property to specify the version of the plugin */
     version?: string;
+    /**
+     *`initialize` is required for plugin development.
+     * 
+     * Even if don't do anything on the `initialize` method, you must at least return a `Promise.resolve()`,
+     * 
+     * since the DataList component will wait for all the plugins to be initialized before rendering.
+    */
     initialize(getStore: () => DataListStore<T>, initialProps?: IDataListProps<T>): Promise<void>;
+    /**Method that happens after the plugin is initialized, this is a good place to set the initial state of the plugin. */
     onInitialized?(getStore: () => DataListStore<T>, initialProps?: IDataListProps<T>): void;
     /** Method that renders something within the DataList plugins area div 
      * 
@@ -53,7 +61,9 @@ export interface DataListState<T> {
 export interface DataListActions<T> {
     /**Set the rows that will be displayed in the DataList */
     setRows: (data: Updater<T[]>) => void;
+    /**Set the columns that will be displayed in the DataList */
     setColumns: (data: Updater<TColumn<T>[]>) => void;
+    /**Set the groups that will be displayed in the DataList */
     setHeaderMenuItems: (data: CallbackSet<IContextualMenuItem[]>) => void;
     setOriginalRowValue: (key: string, oldValue: unknown, transformedValue: string) => void;
     setAllRows: (data: Updater<T[]>) => void;
@@ -63,6 +73,7 @@ export interface DataListActions<T> {
     onColumnClick: (ev: React.MouseEvent<HTMLElement>, column: TColumn<T>) => void;
     setUnmountedPlugins: (pluginKey: string, value: boolean) => void;
     getStore: () => DataListStore<T>;
+    getInitialState: () => DataListState<T>;
     subscribe: ZustandSubscribe<DataListStore<T>>;
     registerPluginStore: (pluginName: string, pluginStore: StoreApi<unknown>) => void;
 }

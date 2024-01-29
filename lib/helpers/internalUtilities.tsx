@@ -80,7 +80,7 @@ export function mapColumns<T>(column: TColumn<T>, store: DataListStore<T>, propR
             onRender = (item: T | undefined, _index?: number, column?: TColumn<T> | undefined) => {
                 //@ts-ignore
                 const fieldValue = getDeepValue(item, column?.key);
-                return fieldValue?.toString() ?? '';
+                return <>{fieldValue || ''}</>
             }
         }
         return { ...column, fieldName: column?.key, isResizable: true, onRender: onRender as any };
@@ -90,7 +90,7 @@ export function mapColumns<T>(column: TColumn<T>, store: DataListStore<T>, propR
         column as any,
         (fieldValue) => {
             const newValue = convertItemValue(transformations, fieldValue);
-            store.setOriginalRowValue(column!?.key, fieldValue, newValue);
+            store.setOriginalRowValue(column?.key, fieldValue, newValue);
             return newValue;
         },
         transformations?.wrapper
@@ -113,10 +113,4 @@ export function sortItems<T>(items: T[], columnKey: ColumnKey<T>, isSortedDescen
     return naturalSort(items).by({
         desc: u => getDeepValue(u as Record<string, any>, columnKey as any)?.toString(),
     });
-};
-
-export function onClickSortItem<T>(desc: boolean, get: () => DataListStore<T>) {
-    const column = get().clickedColumnKey;
-    const sortedItems = sortItems(get().rows, column!, desc);
-    return sortedItems;
 }

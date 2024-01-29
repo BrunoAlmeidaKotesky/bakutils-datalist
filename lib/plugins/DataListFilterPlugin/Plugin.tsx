@@ -5,7 +5,7 @@ import type { IComboBoxOption } from "@fluentui/react/lib/ComboBox";
 import { convertItemValue } from '../../helpers/internalUtilities';
 import { getDeepValue } from "../../helpers/objectUtilities";
 import { FilteringLogic } from './FilteringLogic';
-import { filterPluginStore } from './filterStore';
+import { FilterStoreOverwritten, filterPluginStore } from './filterStore';
 import { FilterWrapper } from './FilterComponents';
 
 export class FilterPlugin<T> implements DataListPlugin<T> {
@@ -15,7 +15,6 @@ export class FilterPlugin<T> implements DataListPlugin<T> {
 
     public async initialize(getStore: () => DataListStore<T>) {
         const store = getStore();
-        console.log("DataListFilterPlugin initialized");
         store.setHeaderMenuItems(items => {
             return [...items,
             {
@@ -34,7 +33,7 @@ export class FilterPlugin<T> implements DataListPlugin<T> {
             applyFilter: state.applyFilter
         }), ({ queue, applyFilter }) => {
             if (applyFilter)
-                FilteringLogic.applyFilter(queue, getStore as unknown as () => DataListStore<any>);
+                FilteringLogic.applyFilter(queue as any[], getStore as unknown as () => DataListStore<any>);
         });
         filterPluginStore.subscribe(state => state.currentFiltering, currentFiltering => {
             const options = currentFiltering?.values?.map<IComboBoxOption>(v => {
@@ -80,7 +79,7 @@ export class FilterPlugin<T> implements DataListPlugin<T> {
                 .map(r => getDeepValue(r, columnKey as any))
         )];
         const dateRangeSliderConfig = this?.config?.dateRangeSliderConfig?.find(i => i.key === columnKey);
-        filterPluginStore.setState({
+        (filterPluginStore as FilterStoreOverwritten<T>).setState({
             currentFiltering: {
                 values,
                 column,

@@ -1,8 +1,8 @@
 import { ITextFieldProps, TextField } from "@fluentui/react/lib/TextField";
 import { IButtonProps, IconButton } from '@fluentui/react/lib/Button';
-import type { DataListPlugin, DataListStore } from "../models/DataListStore";
-import type { ColumnKey } from "../models/ColumnKey";
-import { getDeepValue } from "../helpers/objectUtilities";
+import type { DataListPlugin, DataListStore } from "../../models/DataListStore";
+import type { ColumnKey } from "../../models/ColumnKey";
+import { getDeepValue } from "../../helpers/objectUtilities";
 import { useMemo, CSSProperties } from "react";
 
 export type SearchBoxConfig<T> = {
@@ -41,7 +41,8 @@ function SearchBox<T>(props: SearchBoxProps<T>): JSX.Element {
 
     const onClearFilter = (store: DataListStore<T>) => {
         if (
-            'DataListFilterPlugin' in store?.pluginStores &&
+            store?.pluginStores &&
+            'DataListFilterPlugin' in store.pluginStores &&
             (store?.pluginStores?.DataListFilterPlugin as any)?.getState()?.queue?.length > 0
         ) {
             return (store?.pluginStores?.DataListFilterPlugin as any)?.getState()?.resetState(() => store.setRows(store.allRows || store.rows));
@@ -106,8 +107,8 @@ export class SearchBoxPlugin<T> implements DataListPlugin<T> {
     public version = '1.0.0';
     constructor(private props?: SearchBoxConfig<T> | null) { }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async initialize(_getStore: () => DataListStore<T>): Promise<void> {
-        console.log("SearchBoxPlugin initialized");
         Promise.resolve();
     }
 
