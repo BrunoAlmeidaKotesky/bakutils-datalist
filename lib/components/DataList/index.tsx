@@ -27,7 +27,7 @@ function DataListInner<Row, ColMetaData = any>(props: IDataListProps<Row, ColMet
                             {defaultRender && defaultRender({ ...p!, styles: { root: { cursor: props?.onItemClick ? 'pointer' : 'default' } } }!)}
                         </div>}
                     items={rows} columns={columns}
-                    styles={props?.detailsListProps?.styles}
+                    styles={props?.styles?.detailListStyles}
                     groupProps={{
                         isAllGroupsCollapsed: true,
                         collapseAllVisibility: CollapseAllVisibility.visible,

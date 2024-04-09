@@ -29,7 +29,7 @@ export type TColumn<T, MetaData = any> = IColumn & {
 
 export type IFluentDetailsListProps = Omit<
     IDetailsListProps,
-    'columns' | 'items' | 'onRenderItemColumn' | 'onRenderRow' | 'onShouldVirtualize' | 'layoutMode'
+    'columns' | 'items' | 'onRenderItemColumn' | 'onRenderRow' | 'onShouldVirtualize' | 'layoutMode' | 'styles'
 >
 
 /**Represents all the functions that can be used. */
@@ -61,6 +61,7 @@ export interface IDataListStyles {
     root?: React.CSSProperties;
     /**The container of the `<DetailsList />` list. */
     contentContainer?: React.CSSProperties;
+    detailListStyles?: IDetailsListProps['styles'];
     enableColBorder?: boolean;
 }
 
