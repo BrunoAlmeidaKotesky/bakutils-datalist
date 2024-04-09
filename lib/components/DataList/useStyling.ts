@@ -9,7 +9,7 @@ export function useStyling({ enableColBorder }: StyleConfig) {
             #dataListHeaderContainer div[class*="cellSizer"]::after {
                 content: '';
                 height: 50%;
-                width: 1.5px;
+                width: 0.5px;
                 position: absolute;
                 right: 0;
                 opacity: 1;
@@ -23,7 +23,7 @@ export function useStyling({ enableColBorder }: StyleConfig) {
                 top: 12px;
                 bottom: 0px;
                 width: 1px;
-                background: rgb(200, 198, 196);
+                background: rgb(196, 196, 196);
                 left: 50%;
                 height: 50%;
             }
