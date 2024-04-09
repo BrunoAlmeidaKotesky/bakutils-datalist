@@ -24,7 +24,7 @@ export type BooleanColumnTransformation = {
 export type CustomColumnTransformation = {
     wrapper?: React.ComponentType<{ children: React.ReactNode }>;
     renderAs: 'custom';
-    mapFn: (value: unknown) => string;
+    mapFn: <T = unknown, Item = unknown>(currentValue: T, rowItem: Item) => string;
 };
 
 /**
@@ -57,7 +57,7 @@ export type CustomColumnTransformation = {
  * transformations: {
  *   wrapper: ({children}) => <div style={{color: 'red'}}>{children}</div>,
  *   renderAs: 'custom',
- *   mapFn: (value) => (value as string).toUpperCase()
+ *   mapFn: (currentValue, rowItem) => (currentValue as string).toUpperCase()
  * }
  * ```
  */

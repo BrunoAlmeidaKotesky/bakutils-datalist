@@ -30,9 +30,8 @@ function renderValue<T>(
     return Wrapper ? <Wrapper>{valueNode}</Wrapper> : valueNode;
 }
 
-export const convertItemValue = (transformations: ColumnItemTransformation, fieldValue: unknown): string => {
+export function convertItemValue<T>(transformations: ColumnItemTransformation, fieldValue: unknown, item?: T): string {
     if (fieldValue === null || fieldValue === undefined) return "";
-
     if (!transformations?.renderAs) return fieldValue?.toString() ?? '';
 
     switch (transformations.renderAs) {
@@ -59,7 +58,7 @@ export const convertItemValue = (transformations: ColumnItemTransformation, fiel
             );
         }
         case 'custom': {
-            return transformations?.mapFn(fieldValue);
+            return transformations?.mapFn(fieldValue, item);
         }
     }
 }
@@ -89,7 +88,7 @@ export function mapColumns<T>(column: TColumn<T>, store: DataListStore<T>, propR
         item,
         column as any,
         (fieldValue) => {
-            const newValue = convertItemValue(transformations, fieldValue);
+            const newValue = convertItemValue(transformations, fieldValue, item);
             store.setOriginalRowValue(column?.key, fieldValue, newValue);
             return newValue;
         },
