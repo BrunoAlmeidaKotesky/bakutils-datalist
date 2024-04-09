@@ -19,7 +19,7 @@ export type TColumn<T, MetaData = any> = IColumn & {
      * You can also use the `wrapper` property to wrap the value with a custom component, otherwise it will be wrapped with a `<span />` tag.
      * 
      * See {@link ColumnItemTransformation} for examples.*/
-    transformations?: ColumnItemTransformation;
+    transformations?: ColumnItemTransformation<T>;
     /**Use this if you don't want to display the column all it's rows, with this you can still use this column on for actions like filtering or grouping. 
      * @default false */
     hideColumn?: boolean;

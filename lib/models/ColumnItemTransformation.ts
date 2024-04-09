@@ -1,30 +1,30 @@
 
-export type DateColumnTransformation = {
-    wrapper?: React.ComponentType<{ children: React.ReactNode }>;
+export type DateColumnTransformation<T> = {
+    wrapper?: (item: T) => React.ComponentType<{ children: React.ReactNode }>;
     renderAs: 'date';
     locales: string[];
     formatOptions?: Intl.DateTimeFormatOptions;
 };
 
-export type NumberColumnTransformation = {
-    wrapper?: React.ComponentType<{ children: React.ReactNode }>;
+export type NumberColumnTransformation<T> = {
+    wrapper?: (item: T) => React.ComponentType<{ children: React.ReactNode }>;
     renderAs: 'number';
     locales: string[];
     formatOptions?: Intl.NumberFormatOptions;
 };
 
-export type BooleanColumnTransformation = {
-    wrapper?: React.ComponentType<{ children: React.ReactNode }>;
+export type BooleanColumnTransformation<T> = {
+    wrapper?: (item: T) => React.ComponentType<{ children: React.ReactNode }>;
     renderAs: 'boolean';
     trueText: string;
     falseText: string;
     nullText: string;
 };
 
-export type CustomColumnTransformation = {
-    wrapper?: React.ComponentType<{ children: React.ReactNode }>;
+export type CustomColumnTransformation<T> = {
+    wrapper?: (item: T) => React.ComponentType<{ children: React.ReactNode }>;
     renderAs: 'custom';
-    mapFn: <T = unknown, Item = unknown>(currentValue: T, rowItem: Item) => string;
+    mapFn: (currentValue: unknown, rowItem: T) => string;
 };
 
 /**
@@ -61,4 +61,4 @@ export type CustomColumnTransformation = {
  * }
  * ```
  */
-export type ColumnItemTransformation = DateColumnTransformation | NumberColumnTransformation | BooleanColumnTransformation | CustomColumnTransformation;
+export type ColumnItemTransformation<T> = DateColumnTransformation<T> | NumberColumnTransformation<T> | BooleanColumnTransformation<T> | CustomColumnTransformation<T>;

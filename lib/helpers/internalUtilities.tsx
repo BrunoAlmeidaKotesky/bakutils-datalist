@@ -15,22 +15,24 @@ import type { ColumnItemTransformation } from "../models/ColumnItemTransformatio
  * @param item The current item to render
  * @param column The column of the item to render
  * @param processValue A function to process the value of the item
- * @param Wrapper A wrapper component to wrap the value
+ * @param wrapper A wrapper component to wrap the value
  * @returns 
  */
 function renderValue<T>(
     item: T,
     column: TColumn<T>,
     processValue: (value: any) => ReactNode,
-    Wrapper?: ComponentType<{ children: ReactNode }>
+    wrapper?: (item: T) => ComponentType<{ children: ReactNode }>
 ) {
     //@ts-ignore
     const fieldValue = getDeepValue(item, column?.key);
     const valueNode = processValue(fieldValue);
-    return Wrapper ? <Wrapper>{valueNode}</Wrapper> : valueNode;
+    if (!wrapper) return valueNode;
+    const WrapperComponent = wrapper(item);
+    return <WrapperComponent>{valueNode}</WrapperComponent>;
 }
 
-export function convertItemValue<T>(transformations: ColumnItemTransformation, fieldValue: unknown, item?: T): string {
+export function convertItemValue<T>(transformations: ColumnItemTransformation<T>, fieldValue: unknown, item?: T): string {
     if (fieldValue === null || fieldValue === undefined) return "";
     if (!transformations?.renderAs) return fieldValue?.toString() ?? '';
 
