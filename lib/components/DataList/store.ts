@@ -68,7 +68,7 @@ export const createUseDataListStore = <T>(initialStore: Partial<DataListStore<T>
                                         isSortedDescending: false,
                                         isSorted: true
                                     },
-                                    (state.rows as T[]) = result;
+                                        (state.rows as T[]) = result;
                                 });
                             }
                         }
@@ -88,7 +88,7 @@ export const createUseDataListStore = <T>(initialStore: Partial<DataListStore<T>
                                         isSortedDescending: true,
                                         isSorted: true
                                     },
-                                    (state.rows as T[]) = result;
+                                        (state.rows as T[]) = result;
                                 });
                             }
                         }
@@ -107,6 +107,13 @@ export const createUseDataListStore = <T>(initialStore: Partial<DataListStore<T>
                     else
                         (state.allRows as T[]) = allRows;
                 }),
+                setGroups: groups => set(state => {
+                    if (typeof groups === 'function')
+                        state.groups = groups(state.groups);
+                    else
+                        state.groups = groups;
+                }),
+                setState: set,
                 setOriginalRowValue: (key, oldValue, transformedValue) => set(state => {
                     if (state.originalRowValues?.map(i => i?.key).includes(key)) {
                         const index = state.originalRowValues.findIndex(i => i?.key === key);
@@ -166,7 +173,7 @@ export const createUseDataListStore = <T>(initialStore: Partial<DataListStore<T>
                     newUnmountedPlugins.set(pluginKey, value);
                     state.unmountedPlugins = newUnmountedPlugins;
                 }),
-                getStore: () => get(),
+                getStore: get,
                 subscribe: api.subscribe as unknown as ZustandSubscribe<DataListStore<T>>,
                 getInitialState: api.getInitialState
             })

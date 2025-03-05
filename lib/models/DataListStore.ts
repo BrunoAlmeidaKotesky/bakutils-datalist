@@ -59,6 +59,7 @@ export interface DataListState<T> {
 }
 
 export interface DataListActions<T> {
+    setGroups: (data: Updater<IGroup[]>) => void;
     /**Set the rows that will be displayed in the DataList */
     setRows: (data: Updater<T[]>) => void;
     /**Set the columns that will be displayed in the DataList */
@@ -76,6 +77,7 @@ export interface DataListActions<T> {
     getInitialState: () => DataListState<T>;
     subscribe: ZustandSubscribe<DataListStore<T>>;
     registerPluginStore: (pluginName: string, pluginStore: StoreApi<unknown>) => void;
+    setState: (data: Updater<DataListState<T>>) => void;
 }
 
 export type DataListStore<T> = DataListState<T> & DataListActions<T>;
