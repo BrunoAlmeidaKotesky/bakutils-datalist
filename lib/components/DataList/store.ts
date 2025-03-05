@@ -1,15 +1,15 @@
 import { createStore, useStore } from 'zustand';
-import { immer } from 'zustand/middleware/immer';
 import { subscribeWithSelector } from 'zustand/middleware';
 import { useContext } from 'react';
 import { DataListCtx } from './Context';
-import { Draft, enableMapSet } from 'immer';
+import { mutative } from 'zustand-mutative';
 import { sortItems } from '../../helpers/internalUtilities';
 import type { ColumnKey } from '../../models/ColumnKey';
 import type { IContextualMenuItem } from '@fluentui/react/lib/ContextualMenu';
 import type { TColumn } from '../../models/IDataList';
 import type { DataListState, DataListStore, ZustandSubscribe } from '../../models/DataListStore';
 import type { IDataListProps } from '../../models/IDataList';
+import type { Draft } from 'mutative';
 
 type DataListStoreOverWritten = {
     getState: () => DataListStore<any>;
@@ -29,7 +29,7 @@ type DataListStoreOverWritten = {
     };
     destroy: any;
 }
-enableMapSet();
+
 export const createUseDataListStore = <T>(initialStore: Partial<DataListStore<T>>, props?: IDataListProps<T>) => {
     const DEFAULT_STATE: Omit<DataListState<T>, 'headerMenuItems'> = {
         rows: [],
@@ -48,7 +48,7 @@ export const createUseDataListStore = <T>(initialStore: Partial<DataListStore<T>
         originalRowValues: []
     }
 
-    const store = createStore<DataListStore<T>>()(subscribeWithSelector(immer(
+    const store = createStore<DataListStore<T>>()(subscribeWithSelector(mutative(
         (set, get, api) => {
             return ({
                 ...DEFAULT_STATE,
@@ -173,7 +173,7 @@ export const createUseDataListStore = <T>(initialStore: Partial<DataListStore<T>
                     newUnmountedPlugins.set(pluginKey, value);
                     state.unmountedPlugins = newUnmountedPlugins;
                 }),
-                getStore: get,
+                getStore: () => get(),
                 subscribe: api.subscribe as unknown as ZustandSubscribe<DataListStore<T>>,
                 getInitialState: api.getInitialState
             })

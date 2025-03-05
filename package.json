@@ -1,7 +1,7 @@
 {
   "name": "bakutils-datalist",
   "private": false,
-  "version": "1.4.1",
+  "version": "1.5.0",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -43,10 +43,10 @@
   "dependencies": {
     "@fluentui/react": "^8.115.1",
     "@fluentui/react-icons": "^2.0.225",
-    "bakutils-react-hooks": "^1.0.1",
+    "bakutils-types": "^2.2.0",
     "fast-sort": "^3.4.0",
-    "immer": "^10.0.3",
-    "zustand": "^4.5.0",
-    "bakutils-types": "^2.2.0"
+    "mutative": "^1.1.0",
+    "zustand": "^4.5.6",
+    "zustand-mutative": "^1.2.0"
   }
 }

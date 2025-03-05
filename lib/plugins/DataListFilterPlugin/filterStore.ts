@@ -1,10 +1,10 @@
 import { createStore, useStore } from "zustand";
 import { subscribeWithSelector } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
+import { mutative } from 'zustand-mutative';
 import type { Updater, ZustandSubscribe } from "../../models/DataListStore";
 import type { FilterPluginState, FilterPluginStore, KeyWrapper, WrappedFilterState } from './types';
 import type { ColumnKey } from '../../models/ColumnKey';
-import { Draft } from "immer";
+import type { Draft } from "mutative";
 
 export function getWrappedFilterStoreValueHelper<K extends keyof WrappedFilterState>(
     valuesArray: KeyWrapper<WrappedFilterState[K][0]['value']> | undefined,
@@ -31,7 +31,7 @@ const initialFilterPluginState: FilterPluginState<unknown> = {
 
 export const filterPluginStore: FilterStoreOverwritten<unknown> = createStore<FilterPluginStore<unknown>>()(
     subscribeWithSelector(
-        immer((set, get, { subscribe, getInitialState }) => ({
+        mutative((set, get, { subscribe, getInitialState }) => ({
             ...initialFilterPluginState,
             getInitialState,
             setCurrentFiltering: value => set(state => {

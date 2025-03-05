@@ -1,8 +1,8 @@
 import type { IComboBoxProps } from '@fluentui/react/lib/ComboBox';
-import { useOuterClick } from 'bakutils-react-hooks';
+import { useOuterClick } from '../../helpers/useOuterClick';
 import type { DateRangeDdpChange } from '../../components/DateRangeDropdown';
 import type { FilterQueueValue, FilterAreaProps } from './types';
-import { Draft, produce } from 'immer';
+import { Draft, create } from 'mutative';
 import type { ColumnKey } from '../../models/ColumnKey';
 import { useFilterPluginStoreValues, useFilterPluginStore, stateSelector } from './filterStore';
 
@@ -36,7 +36,7 @@ export function useFilterBox<T>({ getStore }: FilterAreaProps<T>) {
     });
 
     const updateQueueWithSelectedOption: QueueUpdate = (queue, filterIndex, value, clickedKey) =>
-        produce(queue, draft => {
+        create(queue, draft => {
             if (filterIndex !== -1) {
                 if (!draft[filterIndex].values.includes(value))
                     draft[filterIndex].values.push(value);
@@ -45,7 +45,7 @@ export function useFilterBox<T>({ getStore }: FilterAreaProps<T>) {
         });
 
     const removeFromQueue: QueueUpdate = (queue, filterIndex, optionKey) =>
-        produce(queue, draft => {
+        create(queue, draft => {
             if (filterIndex !== -1) {
                 const values = draft[filterIndex].values;
                 const keyIndex = values.findIndex(i => i === optionKey);
@@ -65,7 +65,7 @@ export function useFilterBox<T>({ getStore }: FilterAreaProps<T>) {
         if (opt?.selected)
             newQueue = updateQueueWithSelectedOption(currentQueue, currentFilterIndex, opt.text, clickedKey);
         else
-            newQueue = removeFromQueue(currentQueue, currentFilterIndex, opt!?.text);
+            newQueue = removeFromQueue(currentQueue, currentFilterIndex, opt?.text);
         setQueue(newQueue);
         setWrappedValue(clickedKey, 'selectedKeys', (previousSelectedKeys) => {
             if (opt?.selected) {
@@ -73,7 +73,7 @@ export function useFilterBox<T>({ getStore }: FilterAreaProps<T>) {
                 return [...(previousSelectedKeys || []), opt.key as any];
             } else {
                 // if the option is unselected, remove it from the list
-                return previousSelectedKeys.filter((key) => key !== opt!?.key);
+                return previousSelectedKeys.filter((key) => key !== opt?.key);
             }
         });
     }
@@ -81,13 +81,13 @@ export function useFilterBox<T>({ getStore }: FilterAreaProps<T>) {
     const onDateDropdownChange: DateRangeDdpChange = (date, value, label) => {
         const stateIdx = queue.findIndex(i => i.key === clickedKey);
         if (stateIdx !== -1) {
-            const newQueue = produce(queue, draft => {
+            const newQueue = create(queue, draft => {
                 draft[stateIdx].values = [date?.start?.toISOString(), date?.end?.toISOString()];
                 draft[stateIdx].metadata = { type: 'date', dropdownValue: value, label }
             });
             setQueue(newQueue);
         } else {
-            const newQueue = produce(queue, draft => {
+            const newQueue = create(queue, draft => {
                 draft.push({
                     key: clickedKey as Draft<ColumnKey<unknown>>,
                     values: [date?.start?.toISOString(), date?.end?.toISOString()],
@@ -106,13 +106,13 @@ export function useFilterBox<T>({ getStore }: FilterAreaProps<T>) {
             const end = value.end.toISOString();
             const stateIdx = queue.findIndex(i => i.key === clickedKey);
             if (stateIdx !== -1) {
-                const newQueue = produce(queue, draft => {
+                const newQueue = create(queue, draft => {
                     draft[stateIdx].values = [start, end];
                     draft[stateIdx].metadata = { type: 'date', dropdownValue: ddp, label }
                 });
                 setQueue(newQueue);
             } else {
-                const newQueue = produce(queue, draft => {
+                const newQueue = create(queue, draft => {
                     draft.push({
                         key: clickedKey as Draft<ColumnKey<unknown>>,
                         values: [start, end],
